@@ -3,8 +3,10 @@ name: context-management
 description: >
   AI Agent Context 管理完整指南：防止 API Token 超限报错与模型失忆。
   五层解决方案：分层裁剪、渐进式滚动摘要压缩、任务级 Context 隔离、长期记忆 RAG 化、Prompt Caching。
-  使用场景：设计多轮对话系统、Agent 记忆架构、解决 context_length_exceeded 报错、
+  适用场景：开发 AI 应用 / 聊天 Bot / Agent 系统时，解决 context_length_exceeded 报错、
   优化 Token 成本、实现长期记忆管理、构建 Memory Manager 组件。
+  注意：这是开发者工具，提供可集成到你项目的 Python 脚本。
+  不适用于 Claude Code 自身对话窗口的自动压缩（Claude Code 请使用 /compact 命令）。
   包含可直接运行的 Python 脚本和详细参考文档。
 ---
 
