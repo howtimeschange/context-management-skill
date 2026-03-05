@@ -112,9 +112,10 @@ def compress_turn(turn_text: str, provider: Literal["anthropic", "openai"] = "an
             return compress_turn_anthropic(turn_text)
         return compress_turn_openai(turn_text)
     except Exception as e:
-        # 降级：直接截断前 200 字符 + 标注
+        # 降级：取原文前 100 字符作为极简摘要（确保比原文短）
         print(f"[rolling_summary] 压缩失败，降级截断: {e}")
-        return f"·（摘要失败，截断）{turn_text[:200]}..."
+        truncated = turn_text[:100].replace("\n", " ").strip()
+        return f"·{truncated}…"
 
 
 # ──────────────────────────────────────────
@@ -157,12 +158,22 @@ class ContextMemory:
             self._compress_oldest()
 
     def _compress_oldest(self) -> None:
-        """将最老一轮压缩成摘要"""
+        """将最老一轮压缩成摘要，并在摘要过多时二次合并"""
         oldest_user, oldest_asst = self._short_term.pop(0)
         combined = f"{oldest_user.to_text()}\n\n{oldest_asst.to_text()}"
         compressed = compress_turn(combined, self.compress_provider)
         self._summaries.append(Summary(text=compressed, covers_turns=1))
         print(f"[rolling_summary] 压缩 1 轮 → {count_tokens(combined)}T → {count_tokens(compressed)}T")
+
+        # 二次合并：摘要超过 10 条时，把最老的 5 条合并成 1 条
+        if len(self._summaries) > 10:
+            oldest_5 = self._summaries[:5]
+            self._summaries = self._summaries[5:]
+            merged_text = "\n".join(s.text for s in oldest_5)
+            merged = compress_turn(f"合并以下历史摘要为 3 句话：\n{merged_text}", self.compress_provider)
+            total_turns = sum(s.covers_turns for s in oldest_5)
+            self._summaries.insert(0, Summary(text=merged, covers_turns=total_turns))
+            print(f"[rolling_summary] 二次合并 5 条摘要 → 1 条，覆盖 {total_turns} 轮")
 
     # ── 读取 / 构建 Context ────────────────
 
