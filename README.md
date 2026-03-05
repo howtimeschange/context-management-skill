@@ -2,6 +2,9 @@
 
 > AI Agent Context 管理完整指南：防止模型失忆与 API Token 超限报错。
 
+> ⚠️ **适用场景说明**：这是**开发者工具**，适用于你在开发自己的 AI 应用 / 聊天 Bot / Agent 系统时集成使用。
+> **不适用于** Claude Code 自身的对话窗口压缩 —— Claude Code 用户请直接使用 `/compact` 命令。
+
 ---
 
 ## 背景
