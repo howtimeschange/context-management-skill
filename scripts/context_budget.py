@@ -30,22 +30,68 @@ except ImportError:
 # ──────────────────────────────────────────
 
 MODEL_BUDGETS: dict[str, int] = {
-    # Anthropic
-    "claude-3-7":           80_000,
-    "claude-3-5-sonnet":    80_000,
-    "claude-haiku":         15_000,
-    "claude-haiku-4-5":     15_000,
-    # OpenAI
-    "gpt-4.1":             100_000,
-    "gpt-4.1-mini":         40_000,
-    "gpt-4.1-nano":         15_000,
-    "gpt-4o":               80_000,
-    "gpt-4o-mini":          20_000,
-    # Google
-    "gemini-2.5-pro":      900_000,
-    "gemini-2.5-flash":    900_000,
-    # 默认
-    "default":              50_000,
+    # ── Anthropic Claude 4 系列（2025-2026）──────────────────
+    # Context window: 200K tokens，安全阈值取 85%
+    "claude-opus-4-5":              170_000,   # claude-opus-4-5  (200K ctx)
+    "claude-opus-4":                170_000,   # claude-opus-4    (200K ctx)
+    "claude-sonnet-4-5":            170_000,   # claude-sonnet-4-5 (200K ctx)
+    "claude-sonnet-4":              170_000,   # claude-sonnet-4  (200K ctx)
+    "claude-haiku-4-5":             170_000,   # claude-haiku-4-5 (200K ctx)
+    "claude-haiku-4":               170_000,   # claude-haiku-4   (200K ctx)
+    # Anthropic Claude 3.x 系列（仍常用）
+    "claude-3-7-sonnet":             80_000,   # claude-3-7-sonnet (100K ctx)
+    "claude-3-5-sonnet":             80_000,   # claude-3-5-sonnet (200K ctx，实际用 80K 保守)
+    "claude-3-5-haiku":              80_000,   # claude-3-5-haiku  (200K ctx)
+    "claude-3-opus":                 80_000,   # claude-3-opus     (200K ctx)
+    "claude-3-haiku":                15_000,   # claude-3-haiku    (200K ctx，便宜模型保守)
+    # 旧名称兼容
+    "claude-3-7":                    80_000,
+    "claude-haiku":                  15_000,
+
+    # ── OpenAI 系列（2025-2026）──────────────────────────────
+    # GPT-4.1 系列：1M context window
+    "gpt-4.1":                      850_000,   # gpt-4.1       (1M ctx)
+    "gpt-4.1-mini":                 850_000,   # gpt-4.1-mini  (1M ctx)
+    "gpt-4.1-nano":                 850_000,   # gpt-4.1-nano  (1M ctx)
+    # GPT-5 系列：400K context window
+    "gpt-5":                        340_000,   # gpt-5         (400K ctx)
+    "gpt-5-mini":                   340_000,   # gpt-5-mini    (400K ctx)
+    # o3 / o4-mini：200K context window（推理模型）
+    "o3":                           170_000,   # o3            (200K ctx)
+    "o4-mini":                      170_000,   # o4-mini       (200K ctx)
+    "o3-mini":                      170_000,   # o3-mini       (200K ctx)
+    # GPT-4o 系列：128K context window
+    "gpt-4o":                       100_000,   # gpt-4o        (128K ctx)
+    "gpt-4o-mini":                   50_000,   # gpt-4o-mini   (128K ctx)
+
+    # ── Google Gemini 系列（2025-2026）───────────────────────
+    # Gemini 3 Pro：10M context window（超长，取保守值）
+    "gemini-3-pro":               1_000_000,   # gemini-3-pro  (10M ctx，取 1M 安全阈值)
+    # Gemini 2.5 系列：1M context window
+    "gemini-2.5-pro":               850_000,   # gemini-2.5-pro   (1M ctx)
+    "gemini-2.5-flash":             850_000,   # gemini-2.5-flash (1M ctx)
+    # Gemini 2.0 系列：1M context window
+    "gemini-2.0-flash":             850_000,   # gemini-2.0-flash (1M ctx)
+    "gemini-2.0-flash-lite":        100_000,   # gemini-2.0-flash-lite (128K ctx)
+    # Gemini 1.5 系列（仍广泛使用）
+    "gemini-1.5-pro":               850_000,   # gemini-1.5-pro   (1M ctx)
+    "gemini-1.5-flash":             850_000,   # gemini-1.5-flash (1M ctx)
+    # 旧名称兼容
+    "gemini-2.5-flash-preview":     850_000,
+
+    # ── Meta Llama 系列（开源）──────────────────────────────
+    "llama-4-scout":              1_000_000,   # Llama 4 Scout (10M ctx，取保守 1M)
+    "llama-4-maverick":             850_000,   # Llama 4 Maverick (1M ctx)
+    "llama-3.1-405b":               100_000,   # Llama 3.1 405B  (128K ctx)
+    "llama-3.1-70b":                100_000,   # Llama 3.1 70B   (128K ctx)
+    "llama-3.1-8b":                 100_000,   # Llama 3.1 8B    (128K ctx)
+
+    # ── DeepSeek 系列 ────────────────────────────────────────
+    "deepseek-v3":                  100_000,   # DeepSeek V3  (128K ctx)
+    "deepseek-r1":                  100_000,   # DeepSeek R1  (128K ctx)
+
+    # ── 默认值 ───────────────────────────────────────────────
+    "default":                       50_000,
 }
 
 # 触发裁剪的阈值（占 budget 的比例）

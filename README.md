@@ -161,16 +161,49 @@ context-management-skill/
 
 ## 支持模型
 
-`context_budget.py` 内置以下模型的安全 Token 阈值：
+`context_budget.py` 内置以下模型的安全 Token 阈值（Context Window × 85%）：
 
-| 厂商 | 模型 | 安全阈值 |
-|------|------|---------|
-| Anthropic | claude-3-7, claude-3-5-sonnet | 80,000 |
-| Anthropic | claude-haiku, claude-haiku-4-5 | 15,000 |
-| OpenAI | gpt-4.1 | 100,000 |
-| OpenAI | gpt-4.1-mini | 40,000 |
-| OpenAI | gpt-4o | 80,000 |
-| Google | gemini-2.5-pro/flash | 900,000 |
+**Anthropic Claude 4 系列（2025-2026）**
+
+| 模型 ID | Context Window | 安全阈值 |
+|---------|---------------|---------|
+| claude-opus-4-5, claude-opus-4 | 200K | 170,000 |
+| claude-sonnet-4-5, claude-sonnet-4 | 200K | 170,000 |
+| claude-haiku-4-5, claude-haiku-4 | 200K | 170,000 |
+| claude-3-7-sonnet, claude-3-5-sonnet | 200K | 80,000（保守值） |
+| claude-3-haiku | 200K | 15,000（低成本模型保守值） |
+
+**OpenAI 系列（2025-2026）**
+
+| 模型 ID | Context Window | 安全阈值 |
+|---------|---------------|---------|
+| gpt-4.1, gpt-4.1-mini, gpt-4.1-nano | **1M** | 850,000 |
+| gpt-5, gpt-5-mini | 400K | 340,000 |
+| o3, o4-mini, o3-mini | 200K | 170,000 |
+| gpt-4o | 128K | 100,000 |
+| gpt-4o-mini | 128K | 50,000 |
+
+**Google Gemini 系列（2025-2026）**
+
+| 模型 ID | Context Window | 安全阈值 |
+|---------|---------------|---------|
+| gemini-3-pro | **10M** | 1,000,000（取保守上限） |
+| gemini-2.5-pro, gemini-2.5-flash | **1M** | 850,000 |
+| gemini-2.0-flash | **1M** | 850,000 |
+| gemini-1.5-pro, gemini-1.5-flash | **1M** | 850,000 |
+| gemini-2.0-flash-lite | 128K | 100,000 |
+
+**开源模型**
+
+| 模型 ID | Context Window | 安全阈值 |
+|---------|---------------|---------|
+| llama-4-scout | **10M** | 1,000,000（取保守上限） |
+| llama-4-maverick | **1M** | 850,000 |
+| llama-3.1（8B/70B/405B） | 128K | 100,000 |
+| deepseek-v3, deepseek-r1 | 128K | 100,000 |
+
+> **注意：** 安全阈值 = Context Window × 85%，为 API 请求和模型输出各留余量。对于超大 context（1M+）模型，实际有效性能通常在 60–70% 处开始下降，建议在架构设计上仍采用分层裁剪 + RAG，而非依赖单次塞满。
+
 
 ---
 
